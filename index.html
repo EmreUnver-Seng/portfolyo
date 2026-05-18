@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Emre'nin siyah, beyaz, gri ve bordo tonlarında animasyonlu kişisel portfolyo websitesi."
+    />
+    <title>Emre | Portfolio</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="site-header" aria-label="Portfolio navigation">
+      <nav class="site-nav" aria-label="Ana menü">
+        <a href="#projects" style="--nav-index: 4">Projects</a>
+        <a href="#skills" style="--nav-index: 3">Skills</a>
+        <a href="#about" style="--nav-index: 2">About Me</a>
+        <a href="#communication" style="--nav-index: 1">Communication</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-image-wrap" aria-hidden="true">
+          <img class="hero-image" src="assets/hero-portfolio.png" alt="" />
+        </div>
+
+        <div class="lens-stage" aria-hidden="true">
+          <div class="lens-ring lens-ring-one"></div>
+          <div class="lens-ring lens-ring-two"></div>
+          <div class="lens-blade blade-a"></div>
+          <div class="lens-blade blade-b"></div>
+          <div class="lens-blade blade-c"></div>
+          <div class="lens-blade blade-d"></div>
+          <div class="lens-blade blade-e"></div>
+          <div class="lens-blade blade-f"></div>
+        </div>
+
+        <div class="hero-content">
+          <p class="eyebrow">Portfolio / 2026</p>
+          <h1 id="hero-title">Heavy tone. Sharp motion. Personal work.</h1>
+          <p>
+            Projelerimi, yeteneklerimi ve kişisel hikayemi sinematik bir giriş ekranı
+            üzerinden sunan animasyonlu portfolyo.
+          </p>
+        </div>
+
+        <div class="scroll-cue" aria-hidden="true">
+          <span></span>
+        </div>
+      </section>
+
+      <section class="section projects-section" id="projects" aria-labelledby="projects-title">
+        <div class="section-kicker reveal">01</div>
+        <div class="section-head reveal">
+          <h2 id="projects-title">Projects</h2>
+          <p>Bu alana tamamladığın projelerin görsellerini, kısa açıklamalarını ve canlı bağlantılarını ekleyebilirsin.</p>
+        </div>
+        <div class="project-grid">
+          <article class="project-card reveal">
+            <span class="project-number">01</span>
+            <h3>Featured Interface</h3>
+            <p>Güçlü tipografi, kontrollü animasyon ve net proje anlatımı için örnek proje kartı.</p>
+            <a href="#communication">Discuss</a>
+          </article>
+          <article class="project-card reveal">
+            <span class="project-number">02</span>
+            <h3>Interactive Build</h3>
+            <p>Scroll, görsel geçişler ve mikro etkileşimlerle desteklenebilecek ikinci proje alanı.</p>
+            <a href="#communication">Discuss</a>
+          </article>
+          <article class="project-card reveal">
+            <span class="project-number">03</span>
+            <h3>Visual System</h3>
+            <p>Marka, portfolyo veya ürün sunumları için görsel ağırlıklı çalışma örneği.</p>
+            <a href="#communication">Discuss</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="section skills-section" id="skills" aria-labelledby="skills-title">
+        <div class="section-kicker reveal">02</div>
+        <div class="section-head reveal">
+          <h2 id="skills-title">Skills</h2>
+          <p>Kullandığın teknolojileri burada daha keskin ve okunabilir bir düzenle gösterebiliriz.</p>
+        </div>
+        <div class="skills-list">
+          <div class="skill-row reveal">
+            <strong>Frontend</strong>
+            <span>HTML, CSS, JavaScript, responsive interface</span>
+          </div>
+          <div class="skill-row reveal">
+            <strong>Motion</strong>
+            <span>Scroll animation, reveal effects, visual transitions</span>
+          </div>
+          <div class="skill-row reveal">
+            <strong>Design Sense</strong>
+            <span>Typography, contrast, portfolio storytelling</span>
+          </div>
+          <div class="skill-row reveal">
+            <strong>Delivery</strong>
+            <span>Clean structure, publish-ready static website</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section about-section" id="about" aria-labelledby="about-title">
+        <div class="section-kicker reveal">03</div>
+        <div class="about-layout">
+          <h2 id="about-title" class="reveal">About Me</h2>
+          <div class="about-copy reveal">
+            <p>
+              Buraya kendini, çalışma tarzını, hedeflerini ve hangi alanlarda üretim yaptığını
+              anlatan kısa ama karakterli bir metin ekleyebiliriz.
+            </p>
+            <p>
+              Tasarım özellikle sade tutuldu; asıl kimliği senin ekleyeceğin görsel, proje
+              ekran görüntüleri ve kişisel metinler taşıyacak.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section communication-section" id="communication" aria-labelledby="communication-title">
+        <div class="section-kicker reveal">04</div>
+        <div class="communication-panel reveal">
+          <h2 id="communication-title">Communication</h2>
+          <p>Yeni bir proje, iş fırsatı veya iş birliği için buradaki bağlantıları gerçek hesaplarınla değiştirebilirsin.</p>
+          <div class="contact-links">
+            <a href="mailto:emre@example.com">emre@example.com</a>
+            <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Emre</span>
+      <a href="#top">Back to top</a>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
