@@ -640,16 +640,23 @@ h3 {
 .about-page {
   position: relative;
   z-index: 2;
-  min-height: 100svh;
-  padding: 138px 16px;
+  min-height: calc(100svh + 520px);
+  padding: 0 16px;
   background:
     radial-gradient(circle at 72% 22%, rgba(168, 85, 247, 0.34), transparent 30rem),
     linear-gradient(135deg, #2d0f57, #15071f 62%, #050505);
 }
 
 .about-page-inner {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   width: min(100%, var(--max));
+  min-height: 100svh;
   margin: 0 auto;
+  padding: 138px 0;
 }
 
 .about-page .section-kicker,
