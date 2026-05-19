@@ -19,6 +19,8 @@
   --name-surname-enter: 0;
   --stripe-enter: 0;
   --links-enter: 0;
+  --quote-one-enter: 0;
+  --quote-two-enter: 0;
   --hero-stage-visible: 1;
   --hero-name-size: clamp(48px, 8.2vw, 128px);
   --hero-title-left: calc(-1 * clamp(18px, 3vw, 42px) - 15px);
@@ -28,6 +30,10 @@
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -130,7 +136,7 @@ main,
 .hero {
   position: relative;
   display: grid;
-  min-height: 320svh;
+  min-height: 500svh;
   overflow: clip;
 }
 
@@ -162,6 +168,7 @@ main,
 .hero-person {
   opacity: var(--person-enter);
   transform:
+    translateX(-5vw)
     translateY(calc((1 - var(--person-enter)) * 100vh))
     scale(0.968);
 }
@@ -238,6 +245,47 @@ main,
 
 .blade-f {
   transform: rotate(300deg) translate(calc(-12vmax - var(--lens-open) * 34vmax), -8vmax);
+}
+
+.scroll-guide {
+  position: fixed;
+  left: 50%;
+  bottom: 34px;
+  z-index: 5;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  color: rgba(244, 241, 235, 0.72);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: clamp(0, calc(1 - var(--lens-open) * 2.6), 1);
+  pointer-events: none;
+  transform: translateX(-50%);
+  transition: opacity 180ms ease;
+}
+
+.scroll-guide i {
+  display: block;
+  width: 1px;
+  height: 42px;
+  background: linear-gradient(180deg, rgba(244, 241, 235, 0.78), transparent);
+  animation: scrollGuidePulse 1600ms ease-in-out infinite;
+}
+
+@keyframes scrollGuidePulse {
+  0%,
+  100% {
+    opacity: 0.38;
+    transform: scaleY(0.72);
+    transform-origin: top;
+  }
+  50% {
+    opacity: 1;
+    transform: scaleY(1);
+    transform-origin: top;
+  }
 }
 
 .hero-content {
@@ -421,6 +469,62 @@ h3 {
   color: var(--white);
 }
 
+.hero-quote {
+  position: absolute;
+  right: clamp(0px, 0vw, 0px);
+  top: calc(clamp(120px, 20vh, 190px) + 150px);
+  width: min(36vw, 500px);
+  margin: 0;
+  color: rgba(244, 241, 235, 0.88);
+  font-size: clamp(20px, 2.15vw, 34px);
+  font-style: italic;
+  font-weight: 600;
+  line-height: 1.12;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.quote-line {
+  display: block;
+  will-change: opacity, transform;
+}
+
+.quote-line-one {
+  opacity: var(--quote-one-enter);
+  transform: translateX(calc(200px + ((1 - var(--quote-one-enter)) * 120vw)));
+}
+
+.quote-line-two {
+  opacity: var(--quote-two-enter);
+  transform: translateX(calc(240px + ((1 - var(--quote-two-enter)) * 120vw)));
+}
+
+.quote-accent {
+  display: inline-block;
+  color: var(--burgundy-bright);
+  animation: accentWave 2200ms ease-in-out infinite;
+}
+
+.quote-accent:nth-of-type(2) {
+  animation-delay: 220ms;
+}
+
+@keyframes accentWave {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-4px) rotate(-1.2deg);
+  }
+  50% {
+    transform: translateY(1px) rotate(0.8deg);
+  }
+  75% {
+    transform: translateY(-2px) rotate(1deg);
+  }
+}
+
 .section {
   width: min(100% - 32px, var(--max));
   margin: 0 auto;
@@ -527,6 +631,30 @@ h3 {
   margin: 0 0 18px;
 }
 
+.about-page {
+  position: relative;
+  z-index: 2;
+  min-height: 100svh;
+  padding: 138px 16px;
+  background:
+    radial-gradient(circle at 72% 22%, rgba(168, 85, 247, 0.34), transparent 30rem),
+    linear-gradient(135deg, #2d0f57, #15071f 62%, #050505);
+}
+
+.about-page-inner {
+  width: min(100%, var(--max));
+  margin: 0 auto;
+}
+
+.about-page .section-kicker,
+.about-page h2 {
+  color: var(--white);
+}
+
+.about-page .about-copy {
+  color: rgba(244, 241, 235, 0.78);
+}
+
 .communication-panel {
   padding: 44px;
   border: 1px solid var(--line);
@@ -623,6 +751,13 @@ h3 {
     font-size: 10px;
   }
 
+  .hero-quote {
+    right: 12px;
+    top: 116px;
+    width: min(76vw, 360px);
+    font-size: clamp(16px, 4.8vw, 24px);
+  }
+
   .hero-content,
   .section,
   .site-footer {
@@ -648,6 +783,10 @@ h3 {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   *,
   *::before,
   *::after {
