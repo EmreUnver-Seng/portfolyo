@@ -2,11 +2,13 @@ const root = document.documentElement;
 const hero = document.querySelector(".hero");
 const aboutSection = document.querySelector("#about");
 const revealItems = document.querySelectorAll(".reveal");
+const backToHero = document.querySelector(".back-to-hero");
 const lensHoldDistance = 620;
 const exitDelay = 0.1;
 const sceneEnd = 1 + exitDelay;
 const aboutTransitionProgress = sceneEnd;
 let aboutTransitionStarted = false;
+let returningToHero = false;
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
@@ -88,14 +90,28 @@ function updateLens() {
   const beforeAbout = clamp(aboutTop / (window.innerHeight * 0.42), 0, 1);
   root.style.setProperty("--about-intro-title", (titleIn * beforeAbout).toFixed(4));
 
+  if (returningToHero && progress < 0.9) {
+    returningToHero = false;
+  }
+
   if (progress < 0.82) {
     aboutTransitionStarted = false;
   }
 
-  if (!aboutTransitionStarted && progress >= aboutTransitionProgress && aboutSection) {
+  if (!returningToHero && !aboutTransitionStarted && progress >= aboutTransitionProgress && aboutSection) {
     aboutTransitionStarted = true;
     aboutSection.scrollIntoView({ behavior: "smooth", block: "start" });
   }
+}
+
+function getHeroShowcaseScrollY() {
+  if (!hero) return 0;
+
+  const heroTop = hero.getBoundingClientRect().top + window.scrollY;
+  const scrollable = Math.max(hero.offsetHeight - window.innerHeight, 1);
+  const lensDistance = Math.max(scrollable - lensHoldDistance, 1);
+
+  return heroTop + lensDistance * 0.74;
 }
 
 function updateAboutScene() {
@@ -152,6 +168,18 @@ function requestLensUpdate() {
 
 window.addEventListener("scroll", requestLensUpdate, { passive: true });
 window.addEventListener("resize", requestLensUpdate);
+
+if (backToHero) {
+  backToHero.addEventListener("click", (event) => {
+    event.preventDefault();
+    returningToHero = true;
+    aboutTransitionStarted = false;
+    window.scrollTo({
+      top: getHeroShowcaseScrollY(),
+      behavior: "smooth",
+    });
+  });
+}
 
 updateLens();
 updateAboutScene();
