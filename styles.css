@@ -640,7 +640,7 @@ h3 {
 .about-page {
   position: relative;
   z-index: 2;
-  min-height: calc(100svh + 520px);
+  min-height: calc(100svh + 920px);
   padding: 0 16px;
   background:
     radial-gradient(circle at 72% 22%, rgba(168, 85, 247, 0.34), transparent 30rem),
