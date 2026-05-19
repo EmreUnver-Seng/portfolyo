@@ -21,6 +21,14 @@
   --links-enter: 0;
   --quote-one-enter: 0;
   --quote-two-enter: 0;
+  --about-track-x: 0%;
+  --about-text-one: 0;
+  --about-text-two: 0;
+  --about-text-three: 0;
+  --about-intro-title: 0;
+  --about-heading-one: 0;
+  --about-heading-two: 0;
+  --about-heading-three: 0;
   --hero-stage-visible: 1;
   --hero-name-size: clamp(48px, 8.2vw, 128px);
   --hero-title-left: calc(-1 * clamp(18px, 3vw, 42px) - 15px);
@@ -640,16 +648,95 @@ h3 {
 .about-page {
   position: relative;
   z-index: 2;
-  min-height: calc(100svh + 920px);
+  min-height: 430svh;
   padding: 0 16px;
+  overflow: clip;
   background:
     radial-gradient(circle at 72% 22%, rgba(168, 85, 247, 0.34), transparent 30rem),
     linear-gradient(135deg, #2d0f57, #15071f 62%, #050505);
 }
 
+.about-visual-stage {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  height: 100svh;
+  margin: 0 -16px -100svh;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.about-visual {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  filter: saturate(0.92) contrast(1.08) brightness(0.72);
+  opacity: 1;
+  will-change: opacity, transform;
+}
+
+.about-visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(5, 5, 5, 0.72), rgba(5, 5, 5, 0.36) 50%, rgba(5, 5, 5, 0.6)),
+    linear-gradient(180deg, rgba(5, 5, 5, 0.18), rgba(5, 5, 5, 0.28)),
+    radial-gradient(circle at 72% 22%, rgba(168, 85, 247, 0.18), transparent 32rem);
+}
+
+.about-visual-one {
+  z-index: 1;
+  background-image: url("assets/aboutme1.png");
+  transform: translateX(var(--about-track-x));
+}
+
+.about-visual-two {
+  z-index: 2;
+  background-image: url("assets/aboutme2.png");
+  transform: translateX(calc(-100% + var(--about-track-x)));
+}
+
+.about-visual-three {
+  z-index: 3;
+  background-image: url("assets/aboutme3.png");
+  transform: translateX(calc(-200% + var(--about-track-x)));
+}
+
+.about-transition-title {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 18;
+  display: grid;
+  place-items: center;
+  height: 100svh;
+  opacity: var(--about-intro-title);
+  pointer-events: none;
+  transform: translateY(calc((1 - var(--about-intro-title)) * 18px));
+  will-change: opacity, transform;
+}
+
+.about-transition-title span,
+.about-heading-word {
+  display: inline-block;
+  color: var(--white);
+  text-shadow: 0 0 34px rgba(168, 85, 247, 0.38);
+  animation: aboutWordWave 2600ms ease-in-out infinite;
+}
+
+.about-transition-title span {
+  font-size: clamp(44px, 8vw, 122px);
+  font-weight: 900;
+  line-height: 0.9;
+}
+
 .about-page-inner {
   position: sticky;
   top: 0;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -664,8 +751,85 @@ h3 {
   color: var(--white);
 }
 
+.about-heading {
+  position: relative;
+  min-height: calc(clamp(38px, 6vw, 86px) * 1.05);
+}
+
+.about-heading-word {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.about-heading-one {
+  opacity: var(--about-heading-one);
+}
+
+.about-heading-two {
+  opacity: var(--about-heading-two);
+  animation-delay: 140ms;
+}
+
+.about-heading-three {
+  opacity: var(--about-heading-three);
+  animation-delay: 280ms;
+}
+
+@keyframes aboutWordWave {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  30% {
+    transform: translateY(-5px) rotate(-0.8deg);
+  }
+  58% {
+    transform: translateY(2px) rotate(0.5deg);
+  }
+  78% {
+    transform: translateY(-2px) rotate(0.35deg);
+  }
+}
+
 .about-page .about-copy {
-  color: rgba(244, 241, 235, 0.78);
+  position: relative;
+  min-height: 220px;
+  color: rgba(244, 241, 235, 0.86);
+}
+
+.about-copy > p {
+  display: none;
+}
+
+.about-copy-panel {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 120ms linear, transform 120ms linear;
+  will-change: opacity, transform;
+}
+
+.about-copy-panel p {
+  margin: 0 0 18px;
+}
+
+.about-copy-one {
+  opacity: var(--about-text-one);
+  transform: translateY(calc((1 - var(--about-text-one)) * 18px));
+}
+
+.about-copy-two {
+  opacity: var(--about-text-two);
+  transform: translateY(calc((1 - var(--about-text-two)) * 18px));
+}
+
+.about-copy-three {
+  opacity: var(--about-text-three);
+  transform: translateY(calc((1 - var(--about-text-three)) * 18px));
 }
 
 .communication-panel {

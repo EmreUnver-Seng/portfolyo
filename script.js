@@ -5,7 +5,7 @@ const revealItems = document.querySelectorAll(".reveal");
 const lensHoldDistance = 620;
 const exitDelay = 0.1;
 const sceneEnd = 1 + exitDelay;
-const aboutTransitionProgress = 0.82 + exitDelay + 0.09;
+const aboutTransitionProgress = sceneEnd;
 let aboutTransitionStarted = false;
 
 function clamp(value, min, max) {
@@ -20,6 +20,18 @@ function easeInOutCubic(value) {
 
 function easeInCubic(value) {
   return value * value * value;
+}
+
+function fadeRange(progress, start, end) {
+  return easeInOutCubic(clamp((progress - start) / (end - start), 0, 1));
+}
+
+function steppedAboutTrack(progress) {
+  if (progress < 0.18) return 0;
+  if (progress < 0.42) return easeInOutCubic((progress - 0.18) / 0.24);
+  if (progress < 0.56) return 1;
+  if (progress < 0.8) return 1 + easeInOutCubic((progress - 0.56) / 0.24);
+  return 2;
 }
 
 function updateLens() {
@@ -69,6 +81,13 @@ function updateLens() {
   root.style.setProperty("--quote-two-enter", quoteTwoEnter.toFixed(4));
   root.style.setProperty("--hero-stage-visible", heroStageVisible);
 
+  const aboutTop = aboutSection
+    ? aboutSection.getBoundingClientRect().top
+    : window.innerHeight;
+  const titleIn = fadeRange(progress, 1.02, sceneEnd);
+  const beforeAbout = clamp(aboutTop / (window.innerHeight * 0.42), 0, 1);
+  root.style.setProperty("--about-intro-title", (titleIn * beforeAbout).toFixed(4));
+
   if (progress < 0.82) {
     aboutTransitionStarted = false;
   }
@@ -77,6 +96,29 @@ function updateLens() {
     aboutTransitionStarted = true;
     aboutSection.scrollIntoView({ behavior: "smooth", block: "start" });
   }
+}
+
+function updateAboutScene() {
+  if (!aboutSection) return;
+
+  const rect = aboutSection.getBoundingClientRect();
+  const scrollable = Math.max(aboutSection.offsetHeight - window.innerHeight, 1);
+  const progress = clamp(-rect.top / scrollable, 0, 1);
+  const trackStep = steppedAboutTrack(progress);
+  const textOne = 1 - fadeRange(progress, 0.22, 0.38);
+  const textTwo = fadeRange(progress, 0.4, 0.52) * (1 - fadeRange(progress, 0.6, 0.76));
+  const textThree = fadeRange(progress, 0.72, 0.82);
+  const headingOne = 1 - fadeRange(progress, 0.22, 0.38);
+  const headingTwo = fadeRange(progress, 0.4, 0.52) * (1 - fadeRange(progress, 0.6, 0.76));
+  const headingThree = fadeRange(progress, 0.72, 0.82);
+
+  root.style.setProperty("--about-track-x", `${(trackStep * 100).toFixed(2)}%`);
+  root.style.setProperty("--about-text-one", textOne.toFixed(4));
+  root.style.setProperty("--about-text-two", textTwo.toFixed(4));
+  root.style.setProperty("--about-text-three", textThree.toFixed(4));
+  root.style.setProperty("--about-heading-one", headingOne.toFixed(4));
+  root.style.setProperty("--about-heading-two", headingTwo.toFixed(4));
+  root.style.setProperty("--about-heading-three", headingThree.toFixed(4));
 }
 
 const revealObserver = new IntersectionObserver(
@@ -103,6 +145,7 @@ function requestLensUpdate() {
   ticking = true;
   requestAnimationFrame(() => {
     updateLens();
+    updateAboutScene();
     ticking = false;
   });
 }
@@ -111,3 +154,4 @@ window.addEventListener("scroll", requestLensUpdate, { passive: true });
 window.addEventListener("resize", requestLensUpdate);
 
 updateLens();
+updateAboutScene();
