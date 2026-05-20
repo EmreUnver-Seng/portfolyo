@@ -6,9 +6,16 @@ const backToHero = document.querySelector(".back-to-hero");
 const lensHoldDistance = 620;
 const exitDelay = 0.1;
 const sceneEnd = 1 + exitDelay;
-const aboutTransitionProgress = sceneEnd;
+const aboutTransitionProgress = 1.09;
+const aboutSnapPoints = [0, 0.49, 0.86];
 let aboutTransitionStarted = false;
 let returningToHero = false;
+let previousHeroProgress = null;
+let lastScrollY = window.scrollY;
+let transitionScrollLocked = false;
+let touchStartY = 0;
+let introTransitionFrame = null;
+let aboutSnapAnimating = false;
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
@@ -28,31 +35,106 @@ function fadeRange(progress, start, end) {
   return easeInOutCubic(clamp((progress - start) / (end - start), 0, 1));
 }
 
+function animateScrollTo(targetY, duration = 1700, onComplete, onUpdate) {
+  const startY = window.scrollY;
+  const distance = targetY - startY;
+  const startedAt = performance.now();
+
+  function step(now) {
+    const elapsed = now - startedAt;
+    const progress = clamp(elapsed / duration, 0, 1);
+    window.scrollTo(0, startY + distance * easeInOutCubic(progress));
+    if (onUpdate) onUpdate(progress);
+
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    } else if (onComplete) {
+      onComplete();
+    }
+  }
+
+  requestAnimationFrame(step);
+}
+
+function animateIntroTitleTo(value, duration, onComplete) {
+  if (introTransitionFrame) {
+    cancelAnimationFrame(introTransitionFrame);
+  }
+
+  const startValue = Number.parseFloat(
+    getComputedStyle(root).getPropertyValue("--about-intro-title")
+  ) || 0;
+  const distance = value - startValue;
+  const startedAt = performance.now();
+
+  function step(now) {
+    const elapsed = now - startedAt;
+    const progress = clamp(elapsed / duration, 0, 1);
+    const eased = easeInOutCubic(progress);
+    root.style.setProperty("--about-intro-title", (startValue + distance * eased).toFixed(4));
+
+    if (progress < 1) {
+      introTransitionFrame = requestAnimationFrame(step);
+    } else {
+      introTransitionFrame = null;
+      if (onComplete) onComplete();
+    }
+  }
+
+  introTransitionFrame = requestAnimationFrame(step);
+}
+
+function startAboutIntroTransition() {
+  if (!aboutSection) return;
+
+  aboutTransitionStarted = true;
+  transitionScrollLocked = true;
+
+  animateIntroTitleTo(1, 620, () => {
+    setTimeout(() => {
+      animateScrollTo(
+        aboutSection.getBoundingClientRect().top + window.scrollY,
+        1800,
+        () => {
+          transitionScrollLocked = false;
+          root.style.setProperty("--about-intro-title", "0");
+        },
+        (progress) => {
+          const fadeOut = 1 - easeInOutCubic(clamp((progress - 0.12) / 0.76, 0, 1));
+          root.style.setProperty("--about-intro-title", fadeOut.toFixed(4));
+        }
+      );
+    }, 260);
+  });
+}
+
 function steppedAboutTrack(progress) {
-  if (progress < 0.18) return 0;
-  if (progress < 0.42) return easeInOutCubic((progress - 0.18) / 0.24);
+  if (progress < 0.03) return 0;
+  if (progress < 0.36) return easeInOutCubic((progress - 0.03) / 0.33);
   if (progress < 0.56) return 1;
-  if (progress < 0.8) return 1 + easeInOutCubic((progress - 0.56) / 0.24);
+  if (progress < 0.82) return 1 + easeInOutCubic((progress - 0.56) / 0.26);
   return 2;
 }
 
 function updateLens() {
   if (!hero) return;
 
+  const currentScrollY = window.scrollY;
+  const isScrollingDown = currentScrollY > lastScrollY;
   const rect = hero.getBoundingClientRect();
   const scrollable = Math.max(hero.offsetHeight - window.innerHeight, 1);
   const lensDistance = Math.max(scrollable - lensHoldDistance, 1);
   const scrolled = Math.abs(rect.top);
   const progress = clamp(scrolled / lensDistance, 0, sceneEnd);
   const eased = Math.pow(clamp(progress / 0.78, 0, 1), 1.55);
-  const personExit = 1 - easeInCubic(clamp((progress - (0.82 + exitDelay)) / 0.18, 0, 1));
-  const eyebrowExit = 1 - easeInCubic(clamp((progress - (0.78 + exitDelay)) / 0.2, 0, 1));
-  const nameEmreExit = 1 - easeInCubic(clamp((progress - (0.8 + exitDelay)) / 0.19, 0, 1));
-  const nameSurnameExit = 1 - easeInCubic(clamp((progress - (0.82 + exitDelay)) / 0.18, 0, 1));
-  const stripeExit = 1 - easeInCubic(clamp((progress - (0.84 + exitDelay)) / 0.16, 0, 1));
-  const linksExit = 1 - easeInCubic(clamp((progress - (0.86 + exitDelay)) / 0.14, 0, 1));
-  const quoteOneExit = 1 - easeInCubic(clamp((progress - (0.78 + exitDelay)) / 0.18, 0, 1));
-  const quoteTwoExit = 1 - easeInCubic(clamp((progress - (0.82 + exitDelay)) / 0.16, 0, 1));
+  const personExit = 1 - easeInOutCubic(clamp((progress - 0.86) / 0.17, 0, 1));
+  const eyebrowExit = 1 - easeInOutCubic(clamp((progress - 0.84) / 0.18, 0, 1));
+  const nameEmreExit = 1 - easeInOutCubic(clamp((progress - 0.85) / 0.17, 0, 1));
+  const nameSurnameExit = 1 - easeInOutCubic(clamp((progress - 0.86) / 0.17, 0, 1));
+  const stripeExit = 1 - easeInOutCubic(clamp((progress - 0.88) / 0.15, 0, 1));
+  const linksExit = 1 - easeInOutCubic(clamp((progress - 0.89) / 0.14, 0, 1));
+  const quoteOneExit = 1 - easeInOutCubic(clamp((progress - 0.84) / 0.17, 0, 1));
+  const quoteTwoExit = 1 - easeInOutCubic(clamp((progress - 0.86) / 0.16, 0, 1));
   const personEnter = easeInOutCubic(clamp((progress - 0.04) / 0.58, 0, 1));
   const eyebrowIn = easeInOutCubic(clamp((progress - 0.0) / 0.5, 0, 1));
   const nameEmreIn = easeInOutCubic(clamp((progress - 0.03) / 0.52, 0, 1));
@@ -83,13 +165,6 @@ function updateLens() {
   root.style.setProperty("--quote-two-enter", quoteTwoEnter.toFixed(4));
   root.style.setProperty("--hero-stage-visible", heroStageVisible);
 
-  const aboutTop = aboutSection
-    ? aboutSection.getBoundingClientRect().top
-    : window.innerHeight;
-  const titleIn = fadeRange(progress, 1.02, sceneEnd);
-  const beforeAbout = clamp(aboutTop / (window.innerHeight * 0.42), 0, 1);
-  root.style.setProperty("--about-intro-title", (titleIn * beforeAbout).toFixed(4));
-
   if (returningToHero && progress < 0.9) {
     returningToHero = false;
   }
@@ -98,10 +173,17 @@ function updateLens() {
     aboutTransitionStarted = false;
   }
 
-  if (!returningToHero && !aboutTransitionStarted && progress >= aboutTransitionProgress && aboutSection) {
-    aboutTransitionStarted = true;
-    aboutSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  const crossedIntroThreshold =
+    previousHeroProgress !== null &&
+    previousHeroProgress < 1 &&
+    progress >= 1;
+
+  if (!returningToHero && !aboutTransitionStarted && isScrollingDown && crossedIntroThreshold && aboutSection) {
+    startAboutIntroTransition();
   }
+
+  previousHeroProgress = progress;
+  lastScrollY = currentScrollY;
 }
 
 function getHeroShowcaseScrollY() {
@@ -114,14 +196,74 @@ function getHeroShowcaseScrollY() {
   return heroTop + lensDistance * 0.74;
 }
 
+function getAboutProgress() {
+  if (!aboutSection) return 0;
+
+  const rect = aboutSection.getBoundingClientRect();
+  const scrollable = Math.max(aboutSection.offsetHeight - window.innerHeight, 1);
+  return clamp(-rect.top / scrollable, 0, 1);
+}
+
+function getAboutScrollYForProgress(progress) {
+  if (!aboutSection) return window.scrollY;
+
+  const aboutTop = aboutSection.getBoundingClientRect().top + window.scrollY;
+  const scrollable = Math.max(aboutSection.offsetHeight - window.innerHeight, 1);
+  return aboutTop + scrollable * progress;
+}
+
+function getNearestAboutSnapIndex(progress) {
+  let nearestIndex = 0;
+  let nearestDistance = Number.POSITIVE_INFINITY;
+
+  for (let index = 0; index < aboutSnapPoints.length; index += 1) {
+    const distance = Math.abs(progress - aboutSnapPoints[index]);
+    if (distance < nearestDistance) {
+      nearestDistance = distance;
+      nearestIndex = index;
+    }
+  }
+
+  return nearestIndex;
+}
+
+function isAboutSnapActive() {
+  if (!aboutSection) return false;
+
+  const rect = aboutSection.getBoundingClientRect();
+  return rect.top <= 4 && rect.bottom >= window.innerHeight + 4;
+}
+
+function handleAboutSnap(direction) {
+  if (!isAboutSnapActive()) return false;
+
+  if (aboutSnapAnimating) return true;
+
+  const currentProgress = getAboutProgress();
+  const currentIndex = getNearestAboutSnapIndex(currentProgress);
+  const targetIndex = currentIndex + (direction > 0 ? 1 : -1);
+
+  if (targetIndex < 0 || targetIndex >= aboutSnapPoints.length) {
+    return false;
+  }
+
+  aboutSnapAnimating = true;
+  animateScrollTo(getAboutScrollYForProgress(aboutSnapPoints[targetIndex]), 520, () => {
+    aboutSnapAnimating = false;
+  });
+
+  return true;
+}
+
 function updateAboutScene() {
   if (!aboutSection) return;
 
   const rect = aboutSection.getBoundingClientRect();
   const scrollable = Math.max(aboutSection.offsetHeight - window.innerHeight, 1);
   const progress = clamp(-rect.top / scrollable, 0, 1);
+  const aboutIsActive = rect.top <= window.innerHeight * 0.45;
   const trackStep = steppedAboutTrack(progress);
-  const firstContentIn = fadeRange(progress, 0, 0.1);
+  const firstContentIn = aboutIsActive ? 1 : 0;
   const textOne = firstContentIn * (1 - fadeRange(progress, 0.22, 0.38));
   const textTwo = fadeRange(progress, 0.4, 0.52) * (1 - fadeRange(progress, 0.6, 0.76));
   const textThree = fadeRange(progress, 0.72, 0.82);
@@ -167,14 +309,82 @@ function requestLensUpdate() {
   });
 }
 
+function blockDownwardScroll(event) {
+  if (aboutSnapAnimating) {
+    event.preventDefault();
+    return;
+  }
+
+  if (transitionScrollLocked && event.deltaY > 0) {
+    event.preventDefault();
+    return;
+  }
+
+  if (event.deltaY !== 0 && handleAboutSnap(event.deltaY)) {
+    event.preventDefault();
+  }
+}
+
+function rememberTouchStart(event) {
+  touchStartY = event.touches[0]?.clientY ?? 0;
+}
+
+function blockDownwardTouchScroll(event) {
+  const currentY = event.touches[0]?.clientY ?? touchStartY;
+  const scrollDirection = touchStartY - currentY;
+
+  if (aboutSnapAnimating) {
+    event.preventDefault();
+    return;
+  }
+
+  if (transitionScrollLocked && scrollDirection > 0) {
+    event.preventDefault();
+    return;
+  }
+
+  if (Math.abs(scrollDirection) > 8 && handleAboutSnap(scrollDirection)) {
+    event.preventDefault();
+    touchStartY = currentY;
+  }
+}
+
+function blockDownwardKeys(event) {
+  const downwardKeys = ["ArrowDown", "PageDown", " ", "End"];
+  const upwardKeys = ["ArrowUp", "PageUp", "Home"];
+
+  if (transitionScrollLocked && downwardKeys.includes(event.key)) {
+    event.preventDefault();
+    return;
+  }
+
+  if (aboutSnapAnimating && (downwardKeys.includes(event.key) || upwardKeys.includes(event.key))) {
+    event.preventDefault();
+    return;
+  }
+
+  if (downwardKeys.includes(event.key) && handleAboutSnap(1)) {
+    event.preventDefault();
+  }
+
+  if (upwardKeys.includes(event.key) && handleAboutSnap(-1)) {
+    event.preventDefault();
+  }
+}
+
 window.addEventListener("scroll", requestLensUpdate, { passive: true });
 window.addEventListener("resize", requestLensUpdate);
+window.addEventListener("wheel", blockDownwardScroll, { passive: false });
+window.addEventListener("touchstart", rememberTouchStart, { passive: true });
+window.addEventListener("touchmove", blockDownwardTouchScroll, { passive: false });
+window.addEventListener("keydown", blockDownwardKeys);
 
 if (backToHero) {
   backToHero.addEventListener("click", (event) => {
     event.preventDefault();
     returningToHero = true;
     aboutTransitionStarted = false;
+    transitionScrollLocked = false;
     window.scrollTo({
       top: getHeroShowcaseScrollY(),
       behavior: "smooth",

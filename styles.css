@@ -761,6 +761,7 @@ h3 {
   left: 0;
   top: 0;
   opacity: 0;
+  transition: opacity 820ms ease;
   will-change: opacity, transform;
 }
 
@@ -809,7 +810,7 @@ h3 {
   inset: 0;
   opacity: 0;
   transform: translateY(18px);
-  transition: opacity 120ms linear, transform 120ms linear;
+  transition: opacity 900ms ease, transform 900ms ease;
   will-change: opacity, transform;
 }
 
