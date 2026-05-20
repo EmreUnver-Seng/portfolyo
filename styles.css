@@ -540,7 +540,11 @@ h3 {
 }
 
 .section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   width: min(100% - 32px, var(--max));
+  min-height: 100svh;
   margin: 0 auto;
   padding: 118px 0;
   border-top: 1px solid var(--line);
