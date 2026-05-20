@@ -16,6 +16,8 @@ let transitionScrollLocked = false;
 let touchStartY = 0;
 let introTransitionFrame = null;
 let aboutSnapAnimating = false;
+let aboutSnapCooldownUntil = 0;
+let lockedAboutSnapIndex = null;
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
@@ -237,7 +239,7 @@ function isAboutSnapActive() {
 function handleAboutSnap(direction) {
   if (!isAboutSnapActive()) return false;
 
-  if (aboutSnapAnimating) return true;
+  if (aboutSnapAnimating || performance.now() < aboutSnapCooldownUntil) return true;
 
   const currentProgress = getAboutProgress();
   const currentIndex = getNearestAboutSnapIndex(currentProgress);
@@ -248,8 +250,23 @@ function handleAboutSnap(direction) {
   }
 
   aboutSnapAnimating = true;
-  animateScrollTo(getAboutScrollYForProgress(aboutSnapPoints[targetIndex]), 520, () => {
+  lockedAboutSnapIndex = targetIndex;
+  root.style.setProperty("--about-track-x", `${targetIndex * 100}%`);
+  root.style.setProperty("--about-text-one", targetIndex === 0 ? "1" : "0");
+  root.style.setProperty("--about-text-two", targetIndex === 1 ? "1" : "0");
+  root.style.setProperty("--about-text-three", targetIndex === 2 ? "1" : "0");
+  root.style.setProperty("--about-heading-one", targetIndex === 0 ? "1" : "0");
+  root.style.setProperty("--about-heading-two", targetIndex === 1 ? "1" : "0");
+  root.style.setProperty("--about-heading-three", targetIndex === 2 ? "1" : "0");
+
+  animateScrollTo(getAboutScrollYForProgress(aboutSnapPoints[targetIndex]), 620, () => {
     aboutSnapAnimating = false;
+    aboutSnapCooldownUntil = performance.now() + 520;
+    window.setTimeout(() => {
+      if (performance.now() >= aboutSnapCooldownUntil) {
+        lockedAboutSnapIndex = null;
+      }
+    }, 540);
   });
 
   return true;
@@ -262,6 +279,18 @@ function updateAboutScene() {
   const scrollable = Math.max(aboutSection.offsetHeight - window.innerHeight, 1);
   const progress = clamp(-rect.top / scrollable, 0, 1);
   const aboutIsActive = rect.top <= window.innerHeight * 0.45;
+  if (aboutSnapAnimating || lockedAboutSnapIndex !== null) {
+    const snapIndex = lockedAboutSnapIndex ?? getNearestAboutSnapIndex(progress);
+    root.style.setProperty("--about-track-x", `${snapIndex * 100}%`);
+    root.style.setProperty("--about-text-one", snapIndex === 0 ? "1" : "0");
+    root.style.setProperty("--about-text-two", snapIndex === 1 ? "1" : "0");
+    root.style.setProperty("--about-text-three", snapIndex === 2 ? "1" : "0");
+    root.style.setProperty("--about-heading-one", snapIndex === 0 ? "1" : "0");
+    root.style.setProperty("--about-heading-two", snapIndex === 1 ? "1" : "0");
+    root.style.setProperty("--about-heading-three", snapIndex === 2 ? "1" : "0");
+    return;
+  }
+
   const trackStep = steppedAboutTrack(progress);
   const firstContentIn = aboutIsActive ? 1 : 0;
   const textOne = firstContentIn * (1 - fadeRange(progress, 0.22, 0.38));
