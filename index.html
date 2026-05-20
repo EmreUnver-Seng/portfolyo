@@ -27,8 +27,8 @@
 
     <header class="site-header" aria-label="Portfolio navigation">
       <nav class="site-nav" aria-label="Ana menü">
-        <a href="#about" style="--nav-index: 4">About Me</a>
-        <a href="#skills" style="--nav-index: 3">Skills</a>
+        <a class="back-to-hero" href="#top" style="--nav-index: 4">EMRE</a>
+        <a href="#about" style="--nav-index: 3">About Me</a>
         <a href="#projects" style="--nav-index: 2">Projects</a>
         <a href="#communication" style="--nav-index: 1">Communication</a>
       </nav>
@@ -65,9 +65,21 @@
           </h1>
           <span class="hero-link-stripe" aria-hidden="true"></span>
           <div class="hero-socials" aria-label="Sosyal bağlantılar">
-            <a href="#" target="_blank" rel="noreferrer">GitHub</a>
-            <a href="#" target="_blank" rel="noreferrer">LinkedIn</a>
-            <a href="#" target="_blank" rel="noreferrer">Instagram</a>
+            <a href="https://github.com/EmreUnver-Seng" target="_blank" rel="noreferrer" aria-label="GitHub">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.68c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.35 1.08 2.92.83.09-.65.35-1.08.63-1.33-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.58 9.58 0 0 1 12 5.86c.85 0 1.7.11 2.5.34 1.9-1.29 2.74-1.02 2.74-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.86v2.76c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" />
+              </svg>
+            </a>
+            <a href="https://www.linkedin.com/in/emre-%C3%BCnver-6a1667329/?trk=public-profile-join-page" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5ZM.45 8.02h4.1V23H.45V8.02ZM8.12 8.02h3.93v2.05h.06c.55-1.04 1.88-2.14 3.88-2.14 4.15 0 4.91 2.73 4.91 6.28V23h-4.1v-7.8c0-1.86-.03-4.25-2.59-4.25-2.6 0-3 2.03-3 4.12V23h-4.1V8.02Z" />
+              </svg>
+            </a>
+            <a href="https://www.instagram.com/emreenvr/" target="_blank" rel="noreferrer" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7.75 2h8.5A5.76 5.76 0 0 1 22 7.75v8.5A5.76 5.76 0 0 1 16.25 22h-8.5A5.76 5.76 0 0 1 2 16.25v-8.5A5.76 5.76 0 0 1 7.75 2Zm0 2A3.75 3.75 0 0 0 4 7.75v8.5A3.75 3.75 0 0 0 7.75 20h8.5A3.75 3.75 0 0 0 20 16.25v-8.5A3.75 3.75 0 0 0 16.25 4h-8.5ZM12 7.3A4.7 4.7 0 1 1 12 16.7 4.7 4.7 0 0 1 12 7.3Zm0 2A2.7 2.7 0 1 0 12 14.7 2.7 2.7 0 0 0 12 9.3Zm5.1-2.55a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Z" />
+              </svg>
+            </a>
           </div>
           <p class="hero-quote">
             <span class="quote-line quote-line-one">Bence her zaman biraz daha</span>
@@ -136,57 +148,20 @@
         </div>
       </section>
 
-      <section class="section skills-section" id="skills" aria-labelledby="skills-title">
-        <div class="section-kicker reveal">02</div>
-        <div class="section-head reveal">
-          <h2 id="skills-title">Skills</h2>
-          <p>Kullandığın teknolojileri burada daha keskin ve okunabilir bir düzenle gösterebiliriz.</p>
-        </div>
-        <div class="skills-list">
-          <div class="skill-row reveal">
-            <strong>Frontend</strong>
-            <span>HTML, CSS, JavaScript, responsive interface</span>
-          </div>
-          <div class="skill-row reveal">
-            <strong>Motion</strong>
-            <span>Scroll animation, reveal effects, visual transitions</span>
-          </div>
-          <div class="skill-row reveal">
-            <strong>Design Sense</strong>
-            <span>Typography, contrast, portfolio storytelling</span>
-          </div>
-          <div class="skill-row reveal">
-            <strong>Delivery</strong>
-            <span>Clean structure, publish-ready static website</span>
-          </div>
-        </div>
-      </section>
-
       <section class="section projects-section" id="projects" aria-labelledby="projects-title">
-        <div class="section-kicker reveal">03</div>
-        <div class="section-head reveal">
-          <h2 id="projects-title">Projects</h2>
-          <p>Bu alana tamamladığın projelerin görsellerini, kısa açıklamalarını ve canlı bağlantılarını ekleyebilirsin.</p>
-        </div>
-        <div class="project-grid">
-          <article class="project-card reveal">
-            <span class="project-number">01</span>
-            <h3>Featured Interface</h3>
-            <p>Güçlü tipografi, kontrollü animasyon ve net proje anlatımı için örnek proje kartı.</p>
-            <a href="#communication">Discuss</a>
-          </article>
-          <article class="project-card reveal">
-            <span class="project-number">02</span>
-            <h3>Interactive Build</h3>
-            <p>Scroll, görsel geçişler ve mikro etkileşimlerle desteklenebilecek ikinci proje alanı.</p>
-            <a href="#communication">Discuss</a>
-          </article>
-          <article class="project-card reveal">
-            <span class="project-number">03</span>
-            <h3>Visual System</h3>
-            <p>Marka, portfolyo veya ürün sunumları için görsel ağırlıklı çalışma örneği.</p>
-            <a href="#communication">Discuss</a>
-          </article>
+        <h2 id="projects-title" class="sr-only">Projects</h2>
+        <!-- Envelope reveal scene -->
+        <div class="envelope-scene reveal" id="envelopeScene" aria-label="Proje zarfı - fareyi üzerinde gezdirerek aç">
+          <canvas id="envCanvas"></canvas>
+          <div id="envPapers"></div>
+          <div class="env-hint" id="envHint">
+            <span>Zarfı kes</span>
+            <i></i>
+          </div>
+          <div class="env-progress" id="envProgress">
+            <div class="env-progress-track"><div class="env-progress-fill" id="envProgressFill"></div></div>
+            <span id="envProgressLabel">0%</span>
+          </div>
         </div>
       </section>
 
