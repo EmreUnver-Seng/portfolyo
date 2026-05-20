@@ -11,6 +11,18 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <div class="loader" id="loader" aria-hidden="true">
+      <div class="loader-curtain loader-curtain-top"></div>
+      <div class="loader-curtain loader-curtain-bottom"></div>
+      <div class="loader-content">
+        <div class="loader-counter" id="loaderCounter">0</div>
+        <div class="loader-bar-track">
+          <div class="loader-bar" id="loaderBar"></div>
+        </div>
+        <div class="loader-label">Yükleniyor</div>
+      </div>
+    </div>
+
     <div class="grain" aria-hidden="true"></div>
 
     <header class="site-header" aria-label="Portfolio navigation">

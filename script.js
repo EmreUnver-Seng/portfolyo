@@ -1,3 +1,52 @@
+(function () {
+  const loaderEl = document.getElementById("loader");
+  const counterEl = document.getElementById("loaderCounter");
+  const barEl = document.getElementById("loaderBar");
+  if (!loaderEl || !counterEl || !barEl) return;
+
+  document.body.classList.add("loader-active");
+
+  let current = 0;
+  const duration = 2200;
+  const startedAt = performance.now();
+
+  function easeOutQuart(t) {
+    return 1 - Math.pow(1 - t, 4);
+  }
+
+  function tick(now) {
+    const elapsed = now - startedAt;
+    const raw = Math.min(elapsed / duration, 1);
+    const eased = easeOutQuart(raw);
+    const value = Math.floor(eased * 100);
+
+    if (value !== current) {
+      current = value;
+      counterEl.textContent = current;
+      barEl.style.width = current + "%";
+    }
+
+    if (raw < 1) {
+      requestAnimationFrame(tick);
+    } else {
+      counterEl.textContent = "100";
+      barEl.style.width = "100%";
+      setTimeout(function () {
+        loaderEl.classList.add("is-done");
+        document.body.classList.remove("loader-active");
+        loaderEl.addEventListener("transitionend", function onEnd(e) {
+          if (e.target === loaderEl.querySelector(".loader-curtain-bottom")) {
+            loaderEl.classList.add("is-gone");
+            loaderEl.removeEventListener("transitionend", onEnd);
+          }
+        });
+      }, 180);
+    }
+  }
+
+  requestAnimationFrame(tick);
+})();
+
 const root = document.documentElement;
 const hero = document.querySelector(".hero");
 const aboutSection = document.querySelector("#about");
