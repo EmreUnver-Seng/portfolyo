@@ -121,10 +121,11 @@ function updateAboutScene() {
   const scrollable = Math.max(aboutSection.offsetHeight - window.innerHeight, 1);
   const progress = clamp(-rect.top / scrollable, 0, 1);
   const trackStep = steppedAboutTrack(progress);
-  const textOne = 1 - fadeRange(progress, 0.22, 0.38);
+  const firstContentIn = fadeRange(progress, 0, 0.1);
+  const textOne = firstContentIn * (1 - fadeRange(progress, 0.22, 0.38));
   const textTwo = fadeRange(progress, 0.4, 0.52) * (1 - fadeRange(progress, 0.6, 0.76));
   const textThree = fadeRange(progress, 0.72, 0.82);
-  const headingOne = 1 - fadeRange(progress, 0.22, 0.38);
+  const headingOne = firstContentIn * (1 - fadeRange(progress, 0.22, 0.38));
   const headingTwo = fadeRange(progress, 0.4, 0.52) * (1 - fadeRange(progress, 0.6, 0.76));
   const headingThree = fadeRange(progress, 0.72, 0.82);
 
