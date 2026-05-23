@@ -932,6 +932,10 @@ h3 {
   z-index: 100 !important;
 }
 
+.env-paper.is-yapilacak {
+  filter: saturate(0.72);
+}
+
 .env-text-card {
   display: inline-grid;
   place-items: center;
@@ -964,6 +968,106 @@ h3 {
   line-height: 1;
   text-shadow: 0 0 24px rgba(168,85,247,0.42);
   pointer-events: none;
+}
+
+.done-projects-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 260;
+  display: grid;
+  place-items: center;
+  padding: clamp(18px, 4vw, 48px);
+  background:
+    radial-gradient(circle at 50% 20%, rgba(168,85,247,0.18), transparent 34rem),
+    rgba(5,5,5,0.78);
+  opacity: 0;
+  pointer-events: none;
+  backdrop-filter: blur(14px);
+  transition: opacity 260ms ease;
+}
+
+.done-projects-screen.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.done-projects-panel {
+  position: relative;
+  width: min(1060px, 100%);
+  max-height: min(760px, calc(100svh - 60px));
+  overflow: auto;
+  padding: clamp(24px, 4vw, 42px);
+  border: 1px solid rgba(244,241,235,0.14);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(168,85,247,0.14), rgba(244,241,235,0.035)),
+    rgba(9,9,11,0.94);
+  box-shadow: 0 30px 90px rgba(0,0,0,0.58);
+}
+
+.done-projects-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(244,241,235,0.18);
+  border-radius: 50%;
+  background: rgba(244,241,235,0.05);
+  color: var(--white);
+  cursor: pointer;
+}
+
+.done-projects-kicker {
+  margin: 0 0 10px;
+  color: var(--burgundy-bright);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.done-projects-panel h3 {
+  margin: 0 0 26px;
+  font-size: clamp(34px, 5vw, 74px);
+  line-height: 0.94;
+}
+
+.done-projects-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.done-project-card {
+  min-height: 180px;
+  padding: 18px;
+  border: 1px solid rgba(244,241,235,0.12);
+  border-radius: 8px;
+  background: rgba(244,241,235,0.055);
+}
+
+.done-project-card span,
+.done-project-card small {
+  color: var(--burgundy-bright);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.done-project-card h4 {
+  margin: 16px 0 10px;
+  font-size: 21px;
+  line-height: 1.08;
+}
+
+.done-project-card p {
+  margin: 0 0 18px;
+  color: rgba(244,241,235,0.68);
+  font-size: 14px;
 }
 
 .env-paper-inner {
@@ -1033,34 +1137,89 @@ h3 {
 
 .env-hint {
   position: absolute;
-  bottom: 22px;
+  top: calc(50% - 281px);
   left: 50%;
+  width: min(760px, calc(100vw - 28px));
+  height: 38px;
   transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  color: rgba(244,241,235,0.5);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.env-hint span {
+  position: absolute;
+  left: 50%;
+  top: 18px;
+  display: block;
+  color: rgba(244,241,235,0.56);
   font-size: 10px;
   font-weight: 800;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  pointer-events: none;
-  white-space: nowrap;
-  transition: opacity 0.4s ease;
+  transform: translateX(-50%);
+  animation: envHintTextFade 4200ms ease-in-out infinite;
 }
 
 .env-hint i {
   display: block;
-  width: 1px;
-  height: 36px;
-  background: linear-gradient(180deg, rgba(168,85,247,0.8), transparent);
-  animation: envHintPulse 1600ms ease-in-out infinite;
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 100%;
+  height: 3px;
+  overflow: hidden;
+  background: transparent;
+  border-radius: 999px;
+  box-shadow: none;
+  transform: translateY(-50%);
 }
 
-@keyframes envHintPulse {
-  0%, 100% { opacity: 0.4; transform: scaleY(0.7); transform-origin: top; }
-  50% { opacity: 1; transform: scaleY(1); transform-origin: top; }
+.env-hint i::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 100%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(168,85,247,0.12) 0 4px,
+      rgba(168,85,247,1) 4px 22px,
+      transparent 22px 34px
+    );
+  border-radius: inherit;
+  box-shadow: 0 0 16px rgba(168,85,247,0.82);
+  animation: envCutGuide 3600ms ease-in-out infinite;
+  transform-origin: left center;
+}
+
+@keyframes envCutGuide {
+  0% {
+    transform: scaleX(0);
+    opacity: 0.42;
+  }
+  42% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  58% {
+    transform: scaleX(1);
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0.36;
+    clip-path: inset(0 0 0 100%);
+  }
+}
+
+@keyframes envHintTextFade {
+  0%, 100% {
+    opacity: 0.28;
+  }
+  50% {
+    opacity: 0.82;
+  }
 }
 
 .env-progress {

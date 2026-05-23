@@ -701,9 +701,16 @@ updateAboutScene();
     }
   ];
 
+  for (const project of projects) {
+    project.status = project.status || (project.title ? "yapilmis" : "yapilacak");
+  }
+
   let draggedPaper = null;
   let dragOffsetX = 0;
   let dragOffsetY = 0;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let dragMoved = false;
   let paperLayer = 120;
 
   function randomPaperRotation() {
@@ -739,6 +746,9 @@ updateAboutScene();
     const paperRect = paper.getBoundingClientRect();
     dragOffsetX = event.clientX - paperRect.left;
     dragOffsetY = event.clientY - paperRect.top;
+    dragStartX = event.clientX;
+    dragStartY = event.clientY;
+    dragMoved = false;
     paper.style.left = `${paperRect.left - sceneRect.left}px`;
     paper.style.top = `${paperRect.top - sceneRect.top}px`;
     paper.style.zIndex = String(++paperLayer);
@@ -752,6 +762,9 @@ updateAboutScene();
     const sceneRect = scene.getBoundingClientRect();
     const nextX = Math.max(0, Math.min(event.clientX - sceneRect.left - dragOffsetX, sceneRect.width - draggedPaper.offsetWidth));
     const nextY = Math.max(0, Math.min(event.clientY - sceneRect.top - dragOffsetY, sceneRect.height - draggedPaper.offsetHeight));
+    if (Math.hypot(event.clientX - dragStartX, event.clientY - dragStartY) > 6) {
+      dragMoved = true;
+    }
     draggedPaper.style.left = `${nextX}px`;
     draggedPaper.style.top = `${nextY}px`;
     draggedPaper.style.setProperty("--paper-rotation", `${Number(draggedPaper.dataset.rotation || 0) * 0.35}deg`);
@@ -773,7 +786,52 @@ updateAboutScene();
         // Pointer capture may already be released by the browser.
       }
     }
+    const releasedPaper = draggedPaper;
     draggedPaper = null;
+
+    if (releasedPaper.classList.contains("env-text-card") && !dragMoved) {
+      openDoneProjectsScreen();
+    }
+  }
+
+  function openDoneProjectsScreen() {
+    let screen = scene.querySelector(".done-projects-screen");
+    if (!screen) {
+      screen = document.createElement("div");
+      screen.className = "done-projects-screen";
+      screen.innerHTML = `
+        <div class="done-projects-panel" role="dialog" aria-modal="true" aria-labelledby="done-projects-title">
+          <button class="done-projects-close" type="button" aria-label="Kapat">×</button>
+          <p class="done-projects-kicker">yapilmis</p>
+          <h3 id="done-projects-title">Neler yaptın Emre?</h3>
+          <div class="done-projects-list"></div>
+        </div>
+      `;
+      scene.appendChild(screen);
+      screen.querySelector(".done-projects-close").addEventListener("click", () => {
+        screen.classList.remove("is-visible");
+      });
+      screen.addEventListener("click", (event) => {
+        if (event.target === screen) {
+          screen.classList.remove("is-visible");
+        }
+      });
+    }
+
+    const list = screen.querySelector(".done-projects-list");
+    list.innerHTML = projects
+      .filter((project) => project.status === "yapilmis")
+      .map((project) => `
+        <article class="done-project-card">
+          <span>${project.number}</span>
+          <h4>${project.title}</h4>
+          <p>${project.desc}</p>
+          <small>${project.tag}</small>
+        </article>
+      `)
+      .join("");
+
+    screen.classList.add("is-visible");
   }
 
   function drawProjectCanvas(c, colors) {
@@ -796,6 +854,8 @@ updateAboutScene();
   function createPaper(proj, index) {
     const el = document.createElement('div');
     el.className = 'env-paper';
+    el.dataset.status = proj.status;
+    el.classList.add(`is-${proj.status}`);
 
     const inner = document.createElement('div');
     inner.className = 'env-paper-inner';
@@ -827,7 +887,7 @@ updateAboutScene();
     tag.className = 'env-paper-tag';
     tag.style.background = proj.tagBg;
     tag.style.color = proj.tagColor;
-    tag.textContent = proj.tag || " ";
+    tag.textContent = proj.tag || proj.status;
 
     inner.appendChild(bar); inner.appendChild(imgWrap);
     inner.appendChild(num); inner.appendChild(title);
@@ -901,7 +961,16 @@ updateAboutScene();
     const el = document.createElement('div');
     el.className = 'env-paper env-text-card';
     el.innerHTML = '<span>Neler yaptın Emre?</span>';
+    el.setAttribute("role", "button");
+    el.setAttribute("aria-label", "Yapilmis projeleri göster");
+    el.tabIndex = 0;
     attachDraggablePaper(el);
+    el.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openDoneProjectsScreen();
+      }
+    });
 
     const textW = Math.min(380, W - 44);
     const textH = 56;
